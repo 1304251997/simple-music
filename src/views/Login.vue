@@ -124,7 +124,9 @@ export default {
                 width: 95%;
                 height: 3.5rem;
                 border-radius: 15px;
+                border: none;
                 font-size: .9rem;
+                box-shadow: 2px 2px 10px rgb(83,205,222);
             }
         }
     }
