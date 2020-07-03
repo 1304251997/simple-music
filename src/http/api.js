@@ -10,7 +10,17 @@ import { getRequest, postRequest } from './request'
 
 /* 登录注册 */
 export const login = (phone, password) => postRequest(`/login/cellphone?phone=${phone}&password=${password}`)
-export const register = data => postRequest('/register/cellphone', data)
+export const register = (phone, password, captcha, nickname) => postRequest(`register/cellphone?phone=${phone}&password=${password}&captcha=${captcha}&nickname=${nickname}`)
 
 /* 获取登录状态 */
 export const getStatus = data => getRequest('/login/status', data)
+
+/* 检测手机号是否被注册过 */
+export const checkPhone = (phone) => getRequest(`cellphone/existence/check?phone=${phone}`)
+
+
+/* 获取验证码 */
+export const getCaptcha = (phone) => postRequest(`/captcha/sent?phone=${phone}`)
+
+/** 检验验证码 **/
+export const checkCaptcha = (phone, code) => postRequest(`/captcha/verify?phone=${phone}&captcha=${code}`)

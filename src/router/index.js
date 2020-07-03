@@ -5,14 +5,18 @@ Vue.use(VueRouter)
 
   const routes = [
   {
-    path: '/',
+    path: '/login',
     name: 'Login',
     component: () => import(/* webpackChunkName: "Login" */ '../views/Login.vue')
   }, {
     path: '/register',
     name: 'Register',
     component: () => import(/* webpackChunkName: "Register" */ '../views/Register.vue')
-  }
+  }, {
+      path: '/',
+      name: 'dashboard',
+      component: () => import(/* webpackChunkName: "Dashboard" */ '../views/dashboard/index.vue')
+    }
 ]
 
 const router = new VueRouter({
