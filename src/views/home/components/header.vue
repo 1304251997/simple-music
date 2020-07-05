@@ -2,7 +2,7 @@
     <div class="header">
         <div class="left"><i @click="drawer = true" class="iconfont icon-accout"></i></div>
         <div class="main">
-            <a v-for="(item, index) in showList" :key="item.type" :class="ins == index ? 'active' : ''"  @click="switchType(index)">{{item.type}}</a>
+            <a v-for="(item, index) in showList" :key="item.type" :class="ins == index ? 'active' : ''"  @click="switchType(index)" :href="item.url">{{item.type}}</a>
         </div>
         <div class="right"><i class="iconfont icon-search"></i></div>
         <el-drawer
@@ -19,17 +19,18 @@
 </template>
 <script>
 import sideBar from './sidebar.vue'
+
 export default {
     components: {
-        sideBar
+        sideBar,
     },
     data() {
         return {
             showList: [
-                {type: '我的', id: '1'},
-                {type: '发现', id: '2'},
-                {type: '云村', id: '3'},
-                {type: '视频', id: '4'}
+                {type: '我的', id: '1', 'url': '/mine'},
+                {type: '发现', id: '2', 'url': '/find'},
+                {type: '云村', id: '3', 'url': '/village'},
+                {type: '视频', id: '4', 'url': '/video'}
             ],
             ins: 1,
             drawer: false
@@ -59,6 +60,7 @@ export default {
                 font-size: .85rem;
                 color: #d0c1c1;
                 font-family: PangMenZhengDao;
+                text-decoration: none;
                 &:last-child {
                     margin-right: 0;
                 }

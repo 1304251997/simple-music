@@ -1,5 +1,6 @@
 <template>
-    <div class="dashboard">
+    <div class="find">
+        发现
     </div>
 </template>
 <script>
