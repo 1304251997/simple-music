@@ -37,8 +37,9 @@ export default {
         return {
             bannerSwiper: [],
             code: '0',   // 资源类型,对应以下类型,默认为 0 即PC
+            newDate: '',
             typeArray: [
-                {logo: require('./../../../assets/image/tuijian-icon.png'), name: '每日推荐'},
+                {logo: require('./../../../assets/image/tuijian-icon.png'), name: '每日推荐', date: this.newDate},
                 {logo: require('./../../../assets/image/gedan-icon.png'), name: '歌单'},
                 {logo: require('./../../../assets/image/paihangbang-icon.png'), name: '排行榜'},
                 {logo: require('./../../../assets/image/diantai-icon.png'), name: '电台'},
@@ -48,6 +49,9 @@ export default {
         }
     },
     components: {
+    },
+    created() {
+        this.getTimeDay()
     },
     methods: {
         async getBanner() {
@@ -60,6 +64,12 @@ export default {
             await getSongSheet(30).then(data=>{
                 console.log(data)
             })
+        },
+        getTimeDay() {
+            let that = this
+            const date = new Date()
+            that.newDate = date.getDate()
+            console.log(this.typeArray)
         }
     },
     mounted() {
