@@ -4,6 +4,11 @@
   </div>
 </template>
 
+<script>
+  create: {
+  }
+</script>
+
 <style lang="scss">
 #app, body, html {
   width: 100%;

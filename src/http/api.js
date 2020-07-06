@@ -27,3 +27,6 @@ export const checkCaptcha = (phone, code) => postRequest(`/captcha/verify?phone=
 
 /** 获取首页banner轮播图 **/
 export const dashSwiper = (code) => getRequest(`/banner?type=${code}`)
+
+/** 获取首页精选歌单 **/
+export const getSongSheet = () => getRequest(`/top/playlist?limit=6&order=hot`)

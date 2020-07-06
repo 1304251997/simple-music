@@ -1,8 +1,13 @@
 <template>
     <div class="header">
         <div class="left"><i @click="drawer = true" class="iconfont icon-accout"></i></div>
-        <div class="main">
-            <a v-for="(item, index) in showList" :key="item.type" :class="ins == index ? 'active' : ''"  @click="switchType(index)" :href="item.url">{{item.type}}</a>
+<!--        <div class="main">-->
+<!--            <a v-for="(item, index) in showList" :key="item.type" :class="ins == index ? 'active' : ''"  @click="switchType(index)" :href="item.url">{{item.type}}</a>-->
+<!--        </div>-->
+        <div class="header-menu">
+            <el-menu :default-active="path" class="el-menu-demo" router mode="horizontal">
+                <el-menu-item v-for="item in showList" :key="item.type" :index="item.url">{{item.type}}</el-menu-item>
+            </el-menu>
         </div>
         <div class="right"><i class="iconfont icon-search"></i></div>
         <el-drawer
@@ -24,6 +29,9 @@ export default {
     components: {
         sideBar,
     },
+    created() {
+        this.onRouteChanged()
+    },
     data() {
         return {
             showList: [
@@ -32,13 +40,13 @@ export default {
                 {type: '云村', id: '3', 'url': '/village'},
                 {type: '视频', id: '4', 'url': '/video'}
             ],
-            ins: 1,
-            drawer: false
+            drawer: false,
         }
     },
     methods: {
-        switchType(index) {
-            this.ins  =  index
+        onRouteChanged () {
+            let that = this
+            that.path  = that.$route.path
         }
     }
 }
@@ -50,22 +58,31 @@ export default {
         display: flex;
         justify-content: space-between;
         >div {
-            color: #fff
+            color: #fff;
         }
-        >.main {
-            display: flex;
-            line-height: 1.3;
-            >a {
-                margin-right: 20px;
-                font-size: .85rem;
-                color: #d0c1c1;
-                font-family: PangMenZhengDao;
-                text-decoration: none;
-                &:last-child {
-                    margin-right: 0;
-                }
-                &.active {
-                    color: #fff
+        >.left, >.right {
+            font-size: 1.5rem;
+        }
+        >.header-menu {
+            .el-menu-demo {
+                background-color: rgba(0,0,0,0);
+                border: none;
+                display: flex;
+                justify-content: center;
+                li {
+                    font-size: 1rem;
+                    color: #d0c1c1;
+                    font-family: PangMenZhengDao;
+                    text-decoration: none;
+                    height: auto;
+                    line-height: 2;
+                    padding: 0 15px;
+                    border: none;
+                    &.is-active {
+                        color: #fff;
+                        background-color: rgba(0,0,0,0);
+                        border: none;
+                    }
                 }
             }
         }

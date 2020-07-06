@@ -31,6 +31,7 @@
 </template>
 <script>
 import { login } from './../http/api'
+import { Toast } from 'vant'
 import axios from 'axios'
 export default {
     name: 'login',
@@ -51,8 +52,8 @@ export default {
         }
         return {
             loginForm: {
-                phone: '',
-                password: ''
+                phone: '13716974540',
+                password: 'xzl19970116'
             },
             loginRules: {
                 phone: [
@@ -81,19 +82,17 @@ export default {
                     type: 'error',
                     message: '请您正确填写密码...'
                 })
+                Toast.success('登录成功!')
                 return false
             }
             await login(phone, password).then(res => {
                 if(res.code == '200') {
-                    this.$message({
-                        type: 'success',
-                        message: '登录成功！'
-                    });
+                    Toast.success('登录成功!')
                     window.localStorage.setItem("music_account", JSON.stringify(res.account));
                     window.localStorage.setItem("music_profile", JSON.stringify(res.profile));
                     window.localStorage.setItem("music_token", res.token);
                     setTimeout(() => {
-                        self.$router.push('/')
+                        self.$router.push('/home')
                     }, 1000 * 1)
                 } else {
                     this.$message({
