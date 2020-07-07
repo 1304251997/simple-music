@@ -15,6 +15,7 @@
                 <van-swipe-item v-for="type in typeArray" :key="type.name">
                     <div class="van-image">
                         <img :src="type.logo" :alt="type.name">
+                        <a class="type-date">{{type.date ? type.date : ''}}</a>
                     </div>
                     <br>
                     <span class="type-name">{{type.name}}</span>
@@ -22,16 +23,42 @@
             </van-swipe>
         </div>
         <!--精选歌单-->
-        <div class="musictype">
+        <div class="covertype">
             <div class="item-nav">
                 <span>懂你的精选歌单</span>
                 <van-button type="default">查看更多</van-button>
             </div>
+            <van-swipe class="cover-swipe" :loop="false" :width="110" :show-indicators="false">
+                <van-swipe-item v-for="list in coverEntry" :key="list.id">
+                    <div class="cover-image">
+                        <img width="110" height="110" :src="list.picUrl" :alt="list.name">
+                    </div>
+                    <span class="cover-name">{{list.name}}</span>
+                </van-swipe-item>
+            </van-swipe>
+        </div>
+        <!--精选歌曲-->
+        <div class="musictype">
+            <div class="item-nav">
+                <span>聆听华语佳曲</span>
+                <van-button type="default"><van-icon name="play" />播放全部</van-button>
+            </div>
+            <van-swipe class="music-swipe" :loop="false" :width="365" :show-indicators="false">
+                <van-swipe-item v-for="arr in musicEntry" :key="arr.id">
+                    <div class="music-image">
+                        <img width="50" height="50" :src="arr.picUrl" :alt="arr.name">
+                    </div>
+                    <div class="music-name">
+                        <p>{{arr.name}} - <span v-for="song in arr.song.artists" :key="song.id">{{song.name}}</span></p>
+                    </div>
+                    <van-icon name="play-circle-o" size="1.2rem" color="#d4c8c8" />
+                </van-swipe-item>
+            </van-swipe>
         </div>
     </div>
 </template>
 <script>
-import { dashSwiper, getSongSheet } from '../../../http/api'
+import { dashSwiper, getSongSheet, getSongRadio } from '../../../http/api'
 export default {
     data() {
         return {
@@ -45,36 +72,46 @@ export default {
                 {logo: require('./../../../assets/image/diantai-icon.png'), name: '电台'},
                 {logo: require('./../../../assets/image/sirenfm-icon.png'), name: '私人FM'},
                 {logo: require('./../../../assets/image/zhuanji-icon.png'), name: '数字专辑'},
-            ]
+            ],
+            coverEntry: [],     // 获取的热门推荐歌单            coverEntry: [],     // 获取的热门推荐歌单
+            musicEntry: [],     // 获取的热门推荐歌单
         }
     },
     components: {
     },
-    created() {
-        this.getTimeDay()
+    computed: {
+        typeDate() {
+            return this.typeArray[0].date = this.newDate
+        }
     },
     methods: {
         async getBanner() {
             await dashSwiper(this.code).then(res => {
-                console.log(res)
                 this.bannerSwiper = res.banners;
             })
         },
         async musicSelected() {
-            await getSongSheet(30).then(data=>{
-                console.log(data)
+            // 获取精选歌曲
+            await getSongSheet().then(data=>{
+                this.coverEntry = data.result
+            })
+            // 获取精选歌曲
+            await getSongRadio().then(res=>{
+                console.log(res)
+                this.musicEntry = res.result
             })
         },
+        // 获取当天日期，赋值带每日推荐
         getTimeDay() {
             let that = this
             const date = new Date()
             that.newDate = date.getDate()
-            console.log(this.typeArray)
         }
     },
     mounted() {
         this.getBanner();
         this.musicSelected()
+        this.getTimeDay()
     }
 }
 </script>
@@ -90,7 +127,7 @@ export default {
             }
             .image-type {
                 position: absolute;
-                bottom: 1px;right: 0;
+                bottom: 4px;right: 0;
                 font-size: .75rem;
                 color: #fff;
                 padding: 3px 10px;
@@ -103,6 +140,7 @@ export default {
         }
         .rotation {
             padding: 10px 0 15px;
+            text-align: center;
             .type-swipe {
                 .van-image {
                     color: #fff;
@@ -112,8 +150,20 @@ export default {
                     width: 40px;
                     height: 40px;
                     margin-bottom: .3rem;
+                    position: relative;
                     img {
-                        width: 55%;
+                        width: 60%;
+                        position: absolute;
+                        margin: auto;
+                        top: 0;bottom: 0;
+                        left: 0;right: 0
+                    }
+                    a {
+                        position: absolute;
+                        margin: auto;
+                        left: 0;right: 0;
+                        font-size: .25rem;
+                        line-height: 46px;
                     }
                 }
                 span {
@@ -123,7 +173,7 @@ export default {
                 }
             }
         }
-        .musictype {
+        .covertype {
             >.item-nav {
                 display: flex;
                 justify-content: space-between;
@@ -143,6 +193,103 @@ export default {
                     padding: 4px 10px;
                     border-radius: 20px;
                     border: 1px solid #808080;
+                }
+            }
+            >.cover-swipe {
+                margin-top: .7rem;
+                >.van-swipe__track {
+                    width: 710px !important;
+                    >.van-swipe-item {
+                        margin-right: 10px;
+                        &:last-child {
+                            margin-right: 0;
+                        }
+                        >.cover-image {
+                            margin-bottom: .2rem;
+                            img {
+                                border-radius: 5px;
+                            }
+                        }
+                        >.cover-name {
+                            color: #fff;
+                            text-align: left!important;
+                            font-size: .45rem;
+                            line-height: 1.5;
+                            word-break: break-all;
+                            text-overflow: ellipsis;
+                            overflow: hidden;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                        }
+                    }
+                }
+            }
+        }
+        .musictype {
+            margin-top: 1.5rem;
+            >.item-nav {
+                display: flex;
+                justify-content: space-between;
+                >span {
+                    color: #fff;
+                    font-size: .85rem;
+                    font-family: PangMenZhengDao, Arial, sans-serif;
+                    letter-spacing: 1.5px;
+                    line-height: 1.8;
+                }
+                >.van-button {
+                    height: auto;
+                    line-height: 1.2;
+                    background-color: rgba(0,0,0,0);
+                    color: #fff;
+                    font-family: PangMenZhengDao, Arial, sans-serif;
+                    padding: 4px 10px;
+                    border-radius: 20px;
+                    border: 1px solid #808080;
+                    .van-button__text {
+                        display: flex;
+                        .van-icon {
+                            line-height: 1;
+                            margin-right: .2rem;
+                        }
+                    }
+                }
+            }
+            >.music-swipe {
+                margin-top: .5rem;
+                >.van-swipe__track {
+                    .van-swipe-item {
+                        display: flex;
+                        position: relative;
+                        img {
+                            border-radius: 5px;
+                        }
+                        .music-name {
+                            margin-left: 1rem;
+                            font-size: .75rem;
+                            padding-top: 1rem;
+                            width: 73%;
+                            p {
+                                margin: 0 0 0 0;
+                                color: rgba(255,255,255,.9);
+                                width: 100%;
+                                overflow:hidden; //超出的文本隐藏
+                                text-overflow:ellipsis; //溢出用省略号显示
+                                white-space:nowrap; //溢出不换行
+                                span {
+                                    color: #fff;
+                                }
+                            }
+                        }
+                        .van-icon {
+                            position: absolute;
+                            margin: auto;
+                            top: 0;bottom: 0;
+                            right: 1.2rem;
+                            line-height: 2.7;
+                        }
+                    }
                 }
             }
         }

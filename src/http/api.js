@@ -29,4 +29,7 @@ export const checkCaptcha = (phone, code) => postRequest(`/captcha/verify?phone=
 export const dashSwiper = (code) => getRequest(`/banner?type=${code}`)
 
 /** 获取首页精选歌单 **/
-export const getSongSheet = () => getRequest(`/top/playlist?limit=6&order=hot`)
+export const getSongSheet = () => getRequest(`/personalized?limit=6`)
+
+/** 获取首页精选歌曲 **/
+export const getSongRadio = () => getRequest(`/personalized/newsong`)

@@ -121,6 +121,7 @@ export default {
         height: 100%;
         position: relative;
         background: linear-gradient(to bottom, rgb(92, 208, 221), rgb(188, 226, 228));
+        text-align: center;
         >.login-container {
             width: 100%;
             min-height: 79%;

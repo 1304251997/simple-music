@@ -15,7 +15,7 @@
     <!--                            <el-select v-model="countryType" prefix="el-icon-lock" style="width: 20%;margin-right: 20px">-->
     <!--                                <el-option v-for="item in countryAlias" :key="item.value" :label="item.value" :value="item.value"></el-option>-->
     <!--                            </el-select>-->
-                            <el-input prefix-icon="el-icon-mobile-phone" @blur="checkPhoneUsed(loginForm.phone)" type="type" placeholder="Enter your phone card" autocomplete="off" v-model="loginForm.phone"></el-input>
+                            <el-input prefix-icon="el-icon-mobile-phone" type="type" placeholder="Enter your phone card" autocomplete="off" v-model="loginForm.phone"></el-input>
                         </el-form-item>
                         <el-form-item prop="captcha" style="width: 48%">
                             <a class="item-title"><span>Code</span></a>
@@ -49,7 +49,8 @@
     </div>
 </template>
 <script>
-    import { getCaptcha, checkCaptcha, register, checkPhone } from './../http/api'
+    import { getCaptcha, checkCaptcha, register } from './../http/api'
+    import {Toast} from "vant";
     export default {
         name: 'login',
         data() {
@@ -93,36 +94,24 @@
                 countryType: ''     //
             }
         },
+        created() {
+            this.checkLoginCode = async (phone, captcha) => {
+                return await checkCaptcha(phone, captcha)
+            }
+        },
         methods: {
-            async checkLoginCode(phone, captcha) {
+            // async checkLoginCode(phone, captcha) {
+            //     return await checkCaptcha(phone, captcha)
+            // },
+            async checkTestCode(phone, captcha) {
                 return await checkCaptcha(phone, captcha)
             },
             async signupLoad(phone, password, captcha, nickname) {
                 return await register(phone, password, captcha, nickname)
             },
-            // 检验手机号是否已经注册过
-            async checkPhoneUsed(val) {
-                if(!(/^1[3456789]\d{9}$/.test(val))) {
-                    return false
-                } else {
-                    const res = await checkPhone(val)
-                    if(res.exist == '-1') {
-                        this.$message({
-                            type: 'success',
-                            message: '该手机号尚未注册过，请放心使用!'
-                        })
-                        return false
-                    } else {
-                        this.$message({
-                            type: 'error',
-                            message: '该手机号已经注册过，请您重新填写手机号!'
-                        })
-                        return false
-                    }
-                }
-            },
             // 点击发送验证码，获取验证码
             async sentCaptcha(val) {
+                // 检验手机号是否已经注册过
                 if(!(/^1[3456789]\d{9}$/.test(val))) {
                     this.$message({
                         type: 'error',
@@ -130,13 +119,26 @@
                     })
                     return false
                 } else {
-                    const res = await getCaptcha(val)
-                    if(res.code == '200') {
-                        this.$message({
-                            type: 'success',
-                            message: '验证码已发送至您的手机，请注意查收!'
-                        })
-                    }
+                    // const res = await checkPhone(val)
+                    // if(res.exist != '-1') {
+                    //     this.$message({
+                    //         type: 'error',
+                    //         message: '该手机号已经注册过，请您重新填写手机号!'
+                    //     })
+                    //     return false
+                    // } else {
+                    //     this.$message({
+                    //         type: 'success',
+                    //         message: '该手机号尚未注册过，请放心使用!'
+                    //     })
+                        const res = await getCaptcha(val)
+                        if(res.code == '200') {
+                            this.$message({
+                                type: 'success',
+                                message: '验证码已发送至您的手机，请注意查收!'
+                            })
+                        }
+                    // }
                 }
             },
             async getLoginSubmit(loginForm) {
@@ -146,19 +148,26 @@
                         let password = this.loginForm.password
                         let captcha = this.loginForm.captcha
                         let nickname = this.loginForm.nickname
-                        this.checkLoginCode(phone, captcha).then(data => {
-                            console.log(data)
-                            if(data == null) {
-                                this.$message({
-                                    type: 'error',
-                                    message: '验证码已过期，请重新获取验证码!'
+                        this.checkTestCode(phone, captcha).then(res => {
+                            if(res.code == '200') {
+                                this.checkLoginCode(phone, captcha).then(data => {
+                                    if(data == null) {
+                                        this.$message({
+                                            type: 'error',
+                                            message: '验证码已过期，请重新获取验证码!'
+                                        })
+                                    }
+                                    if(data.code == '200') {
+                                        this.signupLoad(phone, password, captcha, nickname).then(res => {
+                                            if(res.code == '200') {
+                                                Toast.success('注册成功，预祝您玩的愉快!!!')
+                                            }
+                                        })
+                                    }
                                 })
                             }
-                            if(data.code == '200') {
-                                this.signupLoad(phone, password, captcha, nickname).then(res => {
-                                    console.log(res)
-                                })
-                            }
+                        }).catch(error => {
+                            Toast.fail('验证码错误!!!')
                         })
                     }
                 })
@@ -180,6 +189,7 @@
         width: 100%;
         position: absolute;
         background: linear-gradient(to bottom, rgb(92, 208, 221), rgb(188, 226, 228));
+        text-align: center;
         >.login-container {
             width: 100%;
             min-height: 79%;

@@ -14,6 +14,7 @@ export const fetchData = async (url, method, data = null) => {
     httpOpts = method === 'get' ? {
         ...httpOpts,
         params: data,
+        // withCredentials: true,
         paramsSerializer: params => Qs.stringify(params, { indices: false })  // 序列化 处理数组
     } : { ...httpOpts, data }
 

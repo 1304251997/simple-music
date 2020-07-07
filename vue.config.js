@@ -1,3 +1,5 @@
+const { SkeletonPlugin } = require('page-skeleton-webpack-plugin')
+const path = require('path')
 module.exports = {
     // 基本路径
     publicPath: process.env.NODE_ENV === 'production' ? './' : './',
@@ -25,6 +27,24 @@ module.exports = {
         // 模板会被推导为 `public/subpage.html`
         // 并且如果找不到的话，就回退到 `public/index.html`
         // 输出文件名会被推导为 `subpage.html`
-        subpage: "src/main.js"
+        // 多入口时，接着写子页面
+        // subpage: "src/main.js"
     },
+    configureWebpack: {
+        plugins: [
+            new SkeletonPlugin({
+                pathname: path.resolve(__dirname, './shell'),       // 用来存储shell文件的地址
+                staticDir: path.resolve(__dirname, './dist'),
+                routes: ['/', '/find']      // 将需要生成骨架屏的路由 添加到数组中
+            })
+        ]
+    },
+    // chainWebpack: (config) => {
+    //     if(process.env.NODE_ENV !== 'development') {
+    //         config.plugin('html').tap(opts => {
+    //             opts[0].minify.removeComments = false
+    //             return opts
+    //         })
+    //     }
+    // }
 }
