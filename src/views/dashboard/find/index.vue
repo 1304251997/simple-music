@@ -28,14 +28,15 @@
                 <span>懂你的精选歌单</span>
                 <van-button type="default">查看更多</van-button>
             </div>
-            <van-swipe class="cover-swipe" :loop="false" :width="110" :show-indicators="false">
-                <van-swipe-item v-for="list in coverEntry" :key="list.id">
+            <swiper class="cover-swipe" ref="mySwiper" :options="coverOptions">
+                <swiper-slide v-for="list in coverEntry" :key="list.id">
                     <div class="cover-image">
-                        <img width="110" height="110" :src="list.picUrl" :alt="list.name">
+                        <img width="100%" :src="list.picUrl" :alt="list.name">
+                        <a><van-icon name="service-o" size=".45rem" color="#ffffff" /><span>{{Math.floor(list.playCount / 10000)}}万</span></a>
                     </div>
                     <span class="cover-name">{{list.name}}</span>
-                </van-swipe-item>
-            </van-swipe>
+                </swiper-slide>
+            </swiper>
         </div>
         <!--精选歌曲-->
         <div class="musictype">
@@ -43,22 +44,40 @@
                 <span>聆听华语佳曲</span>
                 <van-button type="default"><van-icon name="play" />播放全部</van-button>
             </div>
-            <van-swipe class="music-swipe" :loop="false" :width="365" :show-indicators="false">
-                <van-swipe-item v-for="arr in musicEntry" :key="arr.id">
+            <swiper class="music-swipe" ref="mySwiper" :options="swiperOptions">
+                <swiper-slide  v-for="arr in musicEntry" :key="arr.id">
                     <div class="music-image">
-                        <img width="50" height="50" :src="arr.picUrl" :alt="arr.name">
+                        <img width="54" height="54" :src="arr.picUrl" :alt="arr.name">
                     </div>
                     <div class="music-name">
-                        <p>{{arr.name}} - <span v-for="song in arr.song.artists" :key="song.id">{{song.name}}</span></p>
+                        <p @click.prevent="playMusic(arr.id)">{{arr.name}} - <span v-for="song in arr.song.artists" :key="song.id">{{song.name}}</span></p>
                     </div>
                     <van-icon name="play-circle-o" size="1.2rem" color="#d4c8c8" />
-                </van-swipe-item>
-            </van-swipe>
+                </swiper-slide>
+            </swiper>
+        </div>
+        <!--累了就在音乐里放空-->
+        <div class="covertype">
+            <div class="item-nav">
+                <span>累了就在音乐里放空</span>
+                <van-button type="default">查看更多</van-button>
+            </div>
+            <swiper class="cover-swipe" ref="mySwiper" :options="coverOptions">
+                <swiper-slide v-for="list in coverEntry" :key="list.id">
+                    <div class="cover-image">
+                        <img width="100%" :src="list.picUrl" :alt="list.name">
+                        <a><van-icon name="service-o" size=".45rem" color="#ffffff" /><span>{{Math.floor(list.playCount / 10000)}}万</span></a>
+                    </div>
+                    <span class="cover-name">{{list.name}}</span>
+                </swiper-slide>
+            </swiper>
         </div>
     </div>
 </template>
 <script>
 import { dashSwiper, getSongSheet, getSongRadio } from '../../../http/api'
+import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
+import 'swiper/swiper-bundle.css'
 export default {
     data() {
         return {
@@ -75,9 +94,24 @@ export default {
             ],
             coverEntry: [],     // 获取的热门推荐歌单            coverEntry: [],     // 获取的热门推荐歌单
             musicEntry: [],     // 获取的热门推荐歌单
+            swiperOptions: {
+                slidesPerView: 1,
+                slidesPerColumn: 3,
+                slidesPerColumnFill: 'column',
+                // Some Swiper option/callback...
+            },
+            coverOptions: {
+                slidesPerView : 3.2,
+                spaceBetween : 10,
+            }
         }
     },
     components: {
+        Swiper,
+        SwiperSlide
+    },
+    directives: {
+        swiper: directive
     },
     computed: {
         typeDate() {
@@ -91,22 +125,26 @@ export default {
             })
         },
         async musicSelected() {
-            // 获取精选歌曲
+            // 获取精选歌单
             await getSongSheet().then(data=>{
                 this.coverEntry = data.result
+                // console.log(this.coverEntry)
             })
             // 获取精选歌曲
             await getSongRadio().then(res=>{
-                console.log(res)
+                // console.log(res)
                 this.musicEntry = res.result
             })
+        },
+        playMusic(id) {
+            let self = this
         },
         // 获取当天日期，赋值带每日推荐
         getTimeDay() {
             let that = this
             const date = new Date()
             that.newDate = date.getDate()
-        }
+        },
     },
     mounted() {
         this.getBanner();
@@ -120,7 +158,7 @@ export default {
         background-color: #000;
     }
     .find {
-        padding: 0 15px;
+        padding: 10px 15px 0;
         .header {
             .my-swipe {
                 /*height: 143px;*/
@@ -139,7 +177,7 @@ export default {
             }
         }
         .rotation {
-            padding: 10px 0 15px;
+            padding: 10px 0 20px;
             text-align: center;
             .type-swipe {
                 .van-image {
@@ -197,37 +235,49 @@ export default {
             }
             >.cover-swipe {
                 margin-top: .7rem;
-                >.van-swipe__track {
-                    width: 710px !important;
-                    >.van-swipe-item {
-                        margin-right: 10px;
-                        &:last-child {
-                            margin-right: 0;
-                        }
-                        >.cover-image {
-                            margin-bottom: .2rem;
-                            img {
-                                border-radius: 5px;
+                .swiper-slide {
+                    >.cover-image {
+                        margin-bottom: .2rem;
+                        position: relative;
+                        a {
+                            width: 100%;height: 1.5rem;
+                            line-height: 1.5rem;
+                            text-align: right;
+                            /*background-color: #000;*/
+                            background: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,0));
+                            font-size: .4rem;
+                            color: #fff;
+                            border-radius: 5px 5px 0 0;
+                            position: absolute;
+                            left: 0;
+                            i {
+                                margin-right: .1rem;
+                            }
+                            span {
+                                margin-right: .5rem;
                             }
                         }
-                        >.cover-name {
-                            color: #fff;
-                            text-align: left!important;
-                            font-size: .45rem;
-                            line-height: 1.5;
-                            word-break: break-all;
-                            text-overflow: ellipsis;
-                            overflow: hidden;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
+                        img {
+                            border-radius: 5px;
                         }
+                    }
+                    >.cover-name {
+                        color: #fff;
+                        text-align: left!important;
+                        font-size: .45rem;
+                        line-height: 1.5;
+                        word-break: break-all;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
                     }
                 }
             }
         }
         .musictype {
-            margin-top: 1.5rem;
+            margin: 1.5rem 0;
             >.item-nav {
                 display: flex;
                 justify-content: space-between;
@@ -258,37 +308,38 @@ export default {
             }
             >.music-swipe {
                 margin-top: .5rem;
-                >.van-swipe__track {
-                    .van-swipe-item {
-                        display: flex;
-                        position: relative;
-                        img {
-                            border-radius: 5px;
-                        }
-                        .music-name {
-                            margin-left: 1rem;
-                            font-size: .75rem;
-                            padding-top: 1rem;
-                            width: 73%;
-                            p {
-                                margin: 0 0 0 0;
-                                color: rgba(255,255,255,.9);
-                                width: 100%;
-                                overflow:hidden; //超出的文本隐藏
-                                text-overflow:ellipsis; //溢出用省略号显示
-                                white-space:nowrap; //溢出不换行
-                                span {
-                                    color: #fff;
-                                }
+                height: 186px;
+                .swiper-slide {
+                    display: flex;
+                    position: relative;
+                    height: 54px;
+                    margin-bottom: 8px;
+                    img {
+                        border-radius: 5px;
+                    }
+                    .music-name {
+                        margin-left: 1rem;
+                        font-size: .75rem;
+                        padding-top: 1rem;
+                        width: 73%;
+                        p {
+                            margin: 0 0 0 0;
+                            color: rgba(255,255,255,.9);
+                            width: 100%;
+                            overflow:hidden; //超出的文本隐藏
+                            text-overflow:ellipsis; //溢出用省略号显示
+                            white-space:nowrap; //溢出不换行
+                            span {
+                                color: #fff;
                             }
                         }
-                        .van-icon {
-                            position: absolute;
-                            margin: auto;
-                            top: 0;bottom: 0;
-                            right: 1.2rem;
-                            line-height: 2.7;
-                        }
+                    }
+                    .van-icon {
+                        position: absolute;
+                        margin: auto;
+                        top: 0;bottom: 0;
+                        right: 1.2rem;
+                        line-height: 2.7;
                     }
                 }
             }

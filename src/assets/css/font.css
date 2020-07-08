@@ -2,3 +2,15 @@
     font-family: 'PangMenZhengDao';
     src: url("../font/PangMenZhengDao.ttf");
 }
+@font-face {
+    font-family: 'Jianti';
+    src: url("../font/JianTi.ttf");
+}
+@font-face {
+    font-family: 'Shaerti';
+    src: url("../font/ShaTi.ttf");
+}
+@font-face {
+    font-family: 'Maoer';
+    src: url("../font/Maoer.ttf");
+}

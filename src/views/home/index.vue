@@ -33,6 +33,8 @@
         >.main-container {
             height: 100%;
             background-color: rgba(0,0,0,.8);
+            overflow-y: auto;
+            padding-bottom: 3rem
         }
     }
 </style>

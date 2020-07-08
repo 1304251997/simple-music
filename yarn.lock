@@ -7820,10 +7820,10 @@ svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
-swiper@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.npm.taobao.org/swiper/download/swiper-6.0.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fswiper%2Fdownload%2Fswiper-6.0.0.tgz#d69bfd2e2dc01961c32e6d6bbb7247081cf5a883"
-  integrity sha1-1pv9Li3AGWHDLm1ru3JHCBz1qIM=
+swiper@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.npm.taobao.org/swiper/download/swiper-6.0.1.tgz?cache=0&sync_timestamp=1594118066530&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fswiper%2Fdownload%2Fswiper-6.0.1.tgz#6b20fd9b396b8a58d08a790e2d657833ed3f5a6f"
+  integrity sha1-ayD9mzlriljQinkOLWV4M+0/Wm8=
   dependencies:
     dom7 "^3.0.0-alpha.5"
     ssr-window "^3.0.0-alpha.4"

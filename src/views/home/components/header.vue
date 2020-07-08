@@ -54,7 +54,7 @@ export default {
 <style lang="scss" scoped>
     .header {
         padding: 15px;
-        background-color: #2c3e50;
+        background-color: rgba(44,62,80,.2);
         display: flex;
         justify-content: space-between;
         >div {

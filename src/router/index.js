@@ -51,6 +51,8 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach()
+
 router.onError((error) => {
     const pattern = /Loading chunk (\d)+ failed/g;
     const isChunkLoadFailed = error.message.match(pattern);

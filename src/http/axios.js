@@ -18,9 +18,11 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use(config => {
-    // const token = getToken()
+    // const token = localStorage.getItem("music_token")
     // token && (config.headers['X-Access-Token'] = token)
-
+    // if (token) {
+    //     config.headers.common["X-Auth-Token"] = localStorage.getItem("music_token");
+    // }
     return config
 }, err => {
     return Promise.reject(err)
@@ -29,7 +31,6 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(res => {
     /* 错误处理 */
     // ......
-
     return res
 }, err => {
     return Promise.reject(err)
