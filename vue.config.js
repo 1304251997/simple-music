@@ -2,7 +2,7 @@ const { SkeletonPlugin } = require('page-skeleton-webpack-plugin')
 const path = require('path')
 module.exports = {
     // 基本路径
-    publicPath: process.env.NODE_ENV === 'production' ? './' : './',
+    publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
     // 输入文件目录
     outputDir: './dist',
     // 放置静态资源(js、css、img、fonts)的目录

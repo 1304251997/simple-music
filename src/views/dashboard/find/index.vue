@@ -1,63 +1,65 @@
 <template>
     <div class="find">
-        <!--banner-->
-        <div class="header">
-            <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-                <van-swipe-item v-for="item in bannerSwiper" :key="item.adid">
-                    <img class="el-image" :src="item.imageUrl" />
-                    <span class="image-type" :style="{'background-color': item.titleColor}">{{item.typeTitle}}</span>
-                </van-swipe-item>
-            </van-swipe>
-        </div>
-        <!--分类列表-->
-        <div class="rotation">
-            <van-swipe class="type-swipe" :loop="false" :width="70" :show-indicators="false">
-                <van-swipe-item v-for="type in typeArray" :key="type.name">
-                    <div class="van-image">
-                        <img :src="type.logo" :alt="type.name">
-                        <a class="type-date">{{type.date ? type.date : ''}}</a>
-                    </div>
-                    <br>
-                    <span class="type-name">{{type.name}}</span>
-                </van-swipe-item>
-            </van-swipe>
-        </div>
-        <!--精选歌单-->
-        <div class="covertype">
-            <div class="item-nav">
-                <span>懂你的精选歌单</span>
-                <van-button type="default">查看更多</van-button>
+        <!--// 下拉刷新-->
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+            <!--banner-->
+            <div class="header">
+                <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+                    <van-swipe-item v-for="item in bannerSwiper" :key="item.adid">
+                        <img class="el-image" :src="item.imageUrl" />
+                        <span class="image-type" :style="{'background-color': item.titleColor}">{{item.typeTitle}}</span>
+                    </van-swipe-item>
+                </van-swipe>
             </div>
-            <swiper class="cover-swipe" ref="mySwiper" :options="coverOptions">
-                <swiper-slide v-for="list in coverEntry" :key="list.id">
-                    <div class="cover-image">
-                        <img width="100%" :src="list.picUrl" :alt="list.name">
-                        <a><van-icon name="service-o" size=".45rem" color="#ffffff" /><span>{{Math.floor(list.playCount / 10000)}}万</span></a>
-                    </div>
-                    <span class="cover-name">{{list.name}}</span>
-                </swiper-slide>
-            </swiper>
-        </div>
-        <!--精选歌曲-->
-        <div class="musictype">
-            <div class="item-nav">
-                <span>聆听华语佳曲</span>
-                <van-button type="default"><van-icon name="play" />播放全部</van-button>
+            <!--分类列表-->
+            <div class="rotation">
+                <van-swipe class="type-swipe" :loop="false" :width="70" :show-indicators="false">
+                    <van-swipe-item v-for="type in typeArray" :key="type.name">
+                        <div class="van-image">
+                            <img :src="type.logo" :alt="type.name">
+                            <a class="type-date">{{type.date ? type.date : ''}}</a>
+                        </div>
+                        <br>
+                        <span class="type-name">{{type.name}}</span>
+                    </van-swipe-item>
+                </van-swipe>
             </div>
-            <swiper class="music-swipe" ref="mySwiper" :options="swiperOptions">
-                <swiper-slide  v-for="arr in musicEntry" :key="arr.id">
-                    <div class="music-image">
-                        <img width="54" height="54" :src="arr.picUrl" :alt="arr.name">
-                    </div>
-                    <div class="music-name">
-                        <p @click.prevent="playMusic(arr.id)">{{arr.name}} - <span v-for="song in arr.song.artists" :key="song.id">{{song.name}}</span></p>
-                    </div>
-                    <van-icon name="play-circle-o" size="1.2rem" color="#d4c8c8" />
-                </swiper-slide>
-            </swiper>
-        </div>
-        <!--累了就在音乐里放空-->
-        <div class="covertype">
+            <!--精选歌单-->
+            <div class="covertype">
+                <div class="item-nav">
+                    <span>懂你的精选歌单</span>
+                    <van-button type="default">查看更多</van-button>
+                </div>
+                <swiper class="cover-swipe" ref="mySwiper" :options="coverOptions">
+                    <swiper-slide v-for="list in coverEntry" :key="list.id">
+                        <div class="cover-image" @click="jumpSheetDetail(list.id)">
+                            <img width="100%" :src="list.coverImgUrl" :alt="list.name">
+                            <a><van-icon name="service-o" size=".45rem" color="#ffffff" /><span>{{Math.floor(list.playCount / 10000)}}万</span></a>
+                        </div>
+                        <span class="cover-name">{{list.name}}</span>
+                    </swiper-slide>
+                </swiper>
+            </div>
+            <!--精选歌曲-->
+            <div class="musictype">
+                <div class="item-nav">
+                    <span>聆听华语佳曲</span>
+                    <van-button type="default"><van-icon name="play" />播放全部</van-button>
+                </div>
+                <swiper class="music-swipe" ref="mySwiper" :options="swiperOptions">
+                    <swiper-slide  v-for="arr in musicEntry" :key="arr.id">
+                        <div class="music-image">
+                            <img width="54" height="54" :src="arr.picUrl" :alt="arr.name">
+                        </div>
+                        <div class="music-name">
+                            <p @click.prevent="playMusic(arr.id)">{{arr.name}} - <span v-for="song in arr.song.artists" :key="song.id">{{song.name}}</span></p>
+                        </div>
+                        <van-icon name="play-circle-o" size="1.2rem" color="#d4c8c8" />
+                    </swiper-slide>
+                </swiper>
+            </div>
+            <!--累了就在音乐里放空-->
+            <div class="covertype">
             <div class="item-nav">
                 <span>累了就在音乐里放空</span>
                 <van-button type="default">查看更多</van-button>
@@ -65,17 +67,18 @@
             <swiper class="cover-swipe" ref="mySwiper" :options="coverOptions">
                 <swiper-slide v-for="list in coverEntry" :key="list.id">
                     <div class="cover-image">
-                        <img width="100%" :src="list.picUrl" :alt="list.name">
+                        <img width="100%" :src="list.coverImgUrl" :alt="list.name">
                         <a><van-icon name="service-o" size=".45rem" color="#ffffff" /><span>{{Math.floor(list.playCount / 10000)}}万</span></a>
                     </div>
                     <span class="cover-name">{{list.name}}</span>
                 </swiper-slide>
             </swiper>
         </div>
+        </van-pull-refresh>
     </div>
 </template>
 <script>
-import { dashSwiper, getSongSheet, getSongRadio } from '../../../http/api'
+    import {dashSwiper, getSongSheet, getSongRadio, getTypeTag } from '../../../http/api'
 import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
 export default {
@@ -103,7 +106,8 @@ export default {
             coverOptions: {
                 slidesPerView : 3.2,
                 spaceBetween : 10,
-            }
+            },
+            isLoading: false
         }
     },
     components: {
@@ -125,9 +129,14 @@ export default {
             })
         },
         async musicSelected() {
-            // 获取精选歌单
-            await getSongSheet().then(data=>{
-                this.coverEntry = data.result
+            // 获取歌单分类
+            await getTypeTag().then(res => {
+                this.sheetTage = res.sub[Math.floor((Math.random()*res.sub.length))].name
+
+            })
+            // 根据tag类型，随机获取精选歌单
+            await getSongSheet(this.sheetTage).then(data=>{
+                this.coverEntry = data.playlists
                 // console.log(this.coverEntry)
             })
             // 获取精选歌曲
@@ -136,14 +145,30 @@ export default {
                 this.musicEntry = res.result
             })
         },
+        // 点击播放推荐歌曲
         playMusic(id) {
-            let self = this
+            // let self = this
+            console.log(id)
+        },
+        // 点击进入到推荐歌单详情
+        jumpSheetDetail(songId) {
+            // console.log(songId, type)
+            this.$router.push({
+                name:'sheetdetails',params: {id: songId}
+            })
         },
         // 获取当天日期，赋值带每日推荐
         getTimeDay() {
             let that = this
             const date = new Date()
             that.newDate = date.getDate()
+        },
+        onRefresh() {
+            setTimeout(() => {
+                this.isLoading = false;
+                this.musicSelected()
+                this.getTimeDay()
+            }, 1000);
         },
     },
     mounted() {

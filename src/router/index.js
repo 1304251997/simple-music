@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 // import dashboard from './components/dashboard.js'
+import Sheetdetails from '../views/details/sheetDetail.vue'
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
       path: '/',
       redirect: "/login"
@@ -42,7 +43,11 @@ Vue.use(VueRouter)
               component: () => import(/* webpackChunkName: "mine" */ '../views/dashboard/video/index.vue')
           }
       ]
-    }
+  }, {
+    name: 'sheetdetails',
+    path: `/sheetdetails:id`,
+    component: Sheetdetails
+  }
 ]
 
 const router = new VueRouter({
@@ -50,8 +55,6 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
-
-router.beforeEach()
 
 router.onError((error) => {
     const pattern = /Loading chunk (\d)+ failed/g;

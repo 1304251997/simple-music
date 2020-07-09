@@ -23,7 +23,7 @@ export const checkCaptcha = (phone, code) => postRequest(`/captcha/verify?phone=
 /** 获取首页banner轮播图 **/
 export const dashSwiper = (code) => getRequest(`/banner?type=${code}`)
 /** 获取首页精选歌单 **/
-export const getSongSheet = () => getRequest(`/personalized?limit=6`)
+export const getSongSheet = (tag) => getRequest(`/top/playlist?limit=6&order=hot&cat=${tag}`)
 /** 获取首页精选歌曲 **/
 export const getSongRadio = () => getRequest(`/personalized/newsong`)
 
@@ -31,3 +31,10 @@ export const getSongRadio = () => getRequest(`/personalized/newsong`)
 /** 获取用户详细信息 **/
 export const getUserDetail = (id) => getRequest(`/user/detail?uid=${id}`)
 
+// 歌单
+/** 获取歌单详情 **/
+export const getSheetDetail = (songid) => getRequest(`/playlist/detail?id=${songid}`)
+/** 根据歌单详情获取的歌曲id，去获取全部歌曲 **/
+export const getAllSongs = (ids) => getRequest(`/song/detail?ids=${ids}`)
+/** 获取tag **/
+export const getTypeTag = () => getRequest(`/playlist/catlist`)
