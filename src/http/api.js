@@ -24,12 +24,15 @@ export const checkCaptcha = (phone, code) => postRequest(`/captcha/verify?phone=
 export const dashSwiper = (code) => getRequest(`/banner?type=${code}`)
 /** 获取首页精选歌单 **/
 export const getSongSheet = (tag) => getRequest(`/top/playlist?limit=6&order=hot&cat=${tag}`)
+export const getChoiceSheet = () => getRequest(`/personalized?limit=6`)
 /** 获取首页精选歌曲 **/
 export const getSongRadio = () => getRequest(`/personalized/newsong`)
 
 // 用户信息
 /** 获取用户详细信息 **/
 export const getUserDetail = (id) => getRequest(`/user/detail?uid=${id}`)
+/** 获取用户信息，歌单、收藏、mv **/
+export const getUserStore = (uid) => getRequest(`/user/playlist?uid=${uid}`)
 
 // 歌单
 /** 获取歌单详情 **/

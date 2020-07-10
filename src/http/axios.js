@@ -17,9 +17,11 @@ const instance = axios.create({
     timeout: 6000
 })
 
+instance.defaults.headers.post["Content-Type"] = "application/json;chartet=UTF-8"
+
 instance.interceptors.request.use(config => {
     // const token = localStorage.getItem("music_token")
-    // token && (config.headers['X-Access-Token'] = token)
+    // token && (config.headers.Authorization = token)
     // if (token) {
     //     config.headers.common["X-Auth-Token"] = localStorage.getItem("music_token");
     // }

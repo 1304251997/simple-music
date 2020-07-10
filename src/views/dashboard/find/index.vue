@@ -31,9 +31,9 @@
                     <van-button type="default">查看更多</van-button>
                 </div>
                 <swiper class="cover-swipe" ref="mySwiper" :options="coverOptions">
-                    <swiper-slide v-for="list in coverEntry" :key="list.id">
+                    <swiper-slide v-for="list in filterRandom" :key="list.id">
                         <div class="cover-image" @click="jumpSheetDetail(list.id)">
-                            <img width="100%" :src="list.coverImgUrl" :alt="list.name">
+                            <img width="100%" :src="list.picUrl" :alt="list.name">
                             <a><van-icon name="service-o" size=".45rem" color="#ffffff" /><span>{{Math.floor(list.playCount / 10000)}}万</span></a>
                         </div>
                         <span class="cover-name">{{list.name}}</span>
@@ -78,7 +78,7 @@
     </div>
 </template>
 <script>
-    import {dashSwiper, getSongSheet, getSongRadio, getTypeTag } from '../../../http/api'
+import {dashSwiper, getSongSheet, getSongRadio, getTypeTag, getChoiceSheet } from '../../../http/api'
 import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
 export default {
@@ -97,6 +97,7 @@ export default {
             ],
             coverEntry: [],     // 获取的热门推荐歌单            coverEntry: [],     // 获取的热门推荐歌单
             musicEntry: [],     // 获取的热门推荐歌单
+            choiceEntry: [],     // 获取的热门推荐歌单
             swiperOptions: {
                 slidesPerView: 1,
                 slidesPerColumn: 3,
@@ -120,6 +121,9 @@ export default {
     computed: {
         typeDate() {
             return this.typeArray[0].date = this.newDate
+        },
+        filterRandom() {
+            return this.choiceEntry.slice(0, 6)
         }
     },
     methods: {
@@ -132,7 +136,15 @@ export default {
             // 获取歌单分类
             await getTypeTag().then(res => {
                 this.sheetTage = res.sub[Math.floor((Math.random()*res.sub.length))].name
-
+            })
+            // 获取精选歌单，随机选取6条数据显示在首页
+            await getChoiceSheet().then(data=>{
+                this.choiceEntry = data.result
+                // while(this.choiceEntry.length < 6) {
+                //     let temp = (Math.random()*data.result.length) >> 0
+                //     this.choiceEntry.push(data.result.splice(temp, 1))
+                // }
+                console.log(this.choiceEntry)
             })
             // 根据tag类型，随机获取精选歌单
             await getSongSheet(this.sheetTage).then(data=>{
@@ -232,7 +244,7 @@ export default {
                 span {
                     color: #fff;
                     font-size: .85rem;
-                    font-family: PangMenZhengDao, Arial, sans-serif;
+                    font-family: love-better, Arial, sans-serif;
                 }
             }
         }

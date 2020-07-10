@@ -14,3 +14,7 @@
     font-family: 'Maoer';
     src: url("../font/Maoer.ttf");
 }
+@font-face {
+    font-family: 'love-better';
+    src: url("../font/loveLetter.ttf");
+}

@@ -24,7 +24,7 @@
     </div>
 </template>
 <script>
-import { getUserDetail } from '../../../http/api'
+import { getUserDetail, getUserStore } from '../../../http/api'
 export default {
     name: 'mine',
     data() {
@@ -46,6 +46,10 @@ export default {
             this.account = JSON.parse(localStorage.music_profile)
             await getUserDetail(this.account.userId).then(res => {
                 this.userLevel = res.level
+            })
+            // 获取用户信息，收藏的内容
+            await getUserStore(this.account.userId).then(data => {
+                console.log(data)
             })
         }
     },
