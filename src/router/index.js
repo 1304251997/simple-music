@@ -47,6 +47,14 @@ const routes = [
     name: 'sheetdetails',
     path: `/sheetdetails:id`,
     component: Sheetdetails
+  }, {
+    name: 'search',
+    path: `/search`,
+    component: () => import(/* webpackChunkName: "search" */ '../views/search/index.vue'),
+  }, {
+    name: 'searchDetail',
+    path: '/searchDetail/:key',
+    component: () => import(/* webpackChunkName: "searchDetail" */ '../views/search/detail.vue'),
   }
 ]
 

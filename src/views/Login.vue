@@ -31,6 +31,8 @@
 </template>
 <script>
 import { login } from './../http/api'
+import { mapActions } from 'vuex'
+import { SIGNIN } from "../store/user";
 import { Toast } from 'vant'
 import axios from 'axios'
 export default {
@@ -65,7 +67,11 @@ export default {
             }
         }
     },
+    computed: {
+
+    },
     methods: {
+        ...mapActions([SIGNIN]),
         async handleLogin() {
             let phone = this.loginForm.phone
             let password = this.loginForm.password
@@ -91,6 +97,7 @@ export default {
                     window.localStorage.setItem("music_account", JSON.stringify(res.account));
                     window.localStorage.setItem("music_profile", JSON.stringify(res.profile));
                     window.localStorage.setItem("music_token", res.token);
+                    this.SIGNIN = res.profile
                     setTimeout(() => {
                         self.$router.push('/home')
                     }, 1000 * 1)

@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="left"><i @click="drawer = true" class="iconfont icon-accout"></i></div>
+        <div class="left"><i @click="showpopup" class="iconfont icon-accout"></i></div>
 <!--        <div class="main">-->
 <!--            <a v-for="(item, index) in showList" :key="item.type" :class="ins == index ? 'active' : ''"  @click="switchType(index)" :href="item.url">{{item.type}}</a>-->
 <!--        </div>-->
@@ -9,26 +9,12 @@
                 <el-menu-item v-for="item in showList" :key="item.type" :index="item.url">{{item.type}}</el-menu-item>
             </el-menu>
         </div>
-        <div class="right"><i class="iconfont icon-search"></i></div>
-        <el-drawer
-            class="sidebar-container"
-            title="我是标题"
-            :visible.sync="drawer"
-            direction="ltr"
-            size="80%"
-            :show-close="false"
-            :withHeader="false">
-            <side-bar />
-        </el-drawer>
+        <div class="right" @click="pushSearch"><i class="iconfont icon-search"></i></div>
+        <van-popup v-model="drawer" position="left" :style="{width: '30%', height: '100%'}">内容</van-popup>
     </div>
 </template>
 <script>
-import sideBar from './sidebar.vue'
-
 export default {
-    components: {
-        sideBar,
-    },
     created() {
         this.onRouteChanged()
     },
@@ -47,6 +33,12 @@ export default {
         onRouteChanged () {
             let that = this
             that.path  = that.$route.path
+        },
+        showpopup() {
+            this.drawer = true
+        },
+        pushSearch() {
+            this.$router.push('/search')
         }
     }
 }

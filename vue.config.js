@@ -30,21 +30,33 @@ module.exports = {
         // 多入口时，接着写子页面
         // subpage: "src/main.js"
     },
-    configureWebpack: {
-        plugins: [
-            new SkeletonPlugin({
-                pathname: path.resolve(__dirname, './shell'),       // 用来存储shell文件的地址
-                staticDir: path.resolve(__dirname, './dist'),
-                routes: ['/', '/find']      // 将需要生成骨架屏的路由 添加到数组中
-            })
-        ]
-    },
+    // configureWebpack: {
+    //     plugins: [
+    //         new SkeletonPlugin({
+    //             pathname: path.resolve(__dirname, './shell'),       // 用来存储shell文件的地址
+    //             staticDir: path.resolve(__dirname, './dist'),
+    //             routes: ['/', '/find']      // 将需要生成骨架屏的路由 添加到数组中
+    //         })
+    //     ]
+    // },
     // chainWebpack: (config) => {
     //     if(process.env.NODE_ENV !== 'development') {
     //         config.plugin('html').tap(opts => {
     //             opts[0].minify.removeComments = false
     //             return opts
     //         })
+    //     }
+    // },
+    // devServer: {
+    //     open: true,
+    //     host: '0.0.0.0',
+    //     port: '8087',
+    //     https: false,
+    //     hotOnly: false,
+    //     proxy: {
+    //         target: 'http://localhost:8087',
+    //         changeOrigin: true,
+    //         ws: true
     //     }
     // }
 }

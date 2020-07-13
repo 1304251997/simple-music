@@ -17,7 +17,7 @@
                     <van-swipe-item v-for="type in typeArray" :key="type.name">
                         <div class="van-image">
                             <img :src="type.logo" :alt="type.name">
-                            <a class="type-date">{{type.date ? type.date : ''}}</a>
+                            <i>{{newDate}}</i>
                         </div>
                         <br>
                         <span class="type-name">{{type.name}}</span>
@@ -52,7 +52,7 @@
                             <img width="54" height="54" :src="arr.picUrl" :alt="arr.name">
                         </div>
                         <div class="music-name">
-                            <p @click.prevent="playMusic(arr.id)">{{arr.name}} - <span v-for="song in arr.song.artists" :key="song.id">{{song.name}}</span></p>
+                            <p @click.prevent="playMusic(arr.id)">{{arr.name}} - <span v-for="song in arr.artists" :key="song.id">{{song.name}}</span></p>
                         </div>
                         <van-icon name="play-circle-o" size="1.2rem" color="#d4c8c8" />
                     </swiper-slide>
@@ -60,24 +60,25 @@
             </div>
             <!--累了就在音乐里放空-->
             <div class="covertype">
-            <div class="item-nav">
-                <span>累了就在音乐里放空</span>
-                <van-button type="default">查看更多</van-button>
+                <div class="item-nav">
+                    <span>累了就在音乐里放空</span>
+                    <van-button type="default">查看更多</van-button>
+                </div>
+                <swiper class="cover-swipe" ref="mySwiper" :options="coverOptions">
+                    <swiper-slide v-for="list in coverEntry" :key="list.id">
+                        <div class="cover-image">
+                            <img width="100%" :src="list.coverImgUrl" :alt="list.name">
+                            <a><van-icon name="service-o" size=".45rem" color="#ffffff" /><span>{{Math.floor(list.playCount / 10000)}}万</span></a>
+                        </div>
+                        <span class="cover-name">{{list.name}}</span>
+                    </swiper-slide>
+                </swiper>
             </div>
-            <swiper class="cover-swipe" ref="mySwiper" :options="coverOptions">
-                <swiper-slide v-for="list in coverEntry" :key="list.id">
-                    <div class="cover-image">
-                        <img width="100%" :src="list.coverImgUrl" :alt="list.name">
-                        <a><van-icon name="service-o" size=".45rem" color="#ffffff" /><span>{{Math.floor(list.playCount / 10000)}}万</span></a>
-                    </div>
-                    <span class="cover-name">{{list.name}}</span>
-                </swiper-slide>
-            </swiper>
-        </div>
         </van-pull-refresh>
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import {dashSwiper, getSongSheet, getSongRadio, getTypeTag, getChoiceSheet } from '../../../http/api'
 import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
@@ -87,14 +88,14 @@ export default {
             bannerSwiper: [],
             code: '0',   // 资源类型,对应以下类型,默认为 0 即PC
             newDate: '',
-            typeArray: [
-                {logo: require('./../../../assets/image/tuijian-icon.png'), name: '每日推荐', date: this.newDate},
+            typeArray: Object.freeze([
+                {logo: require('./../../../assets/image/tuijian-icon.png'), name: '每日推荐', date: ''},
                 {logo: require('./../../../assets/image/gedan-icon.png'), name: '歌单'},
                 {logo: require('./../../../assets/image/paihangbang-icon.png'), name: '排行榜'},
                 {logo: require('./../../../assets/image/diantai-icon.png'), name: '电台'},
                 {logo: require('./../../../assets/image/sirenfm-icon.png'), name: '私人FM'},
                 {logo: require('./../../../assets/image/zhuanji-icon.png'), name: '数字专辑'},
-            ],
+            ]),
             coverEntry: [],     // 获取的热门推荐歌单            coverEntry: [],     // 获取的热门推荐歌单
             musicEntry: [],     // 获取的热门推荐歌单
             choiceEntry: [],     // 获取的热门推荐歌单
@@ -119,12 +120,10 @@ export default {
         swiper: directive
     },
     computed: {
-        typeDate() {
-            return this.typeArray[0].date = this.newDate
-        },
         filterRandom() {
             return this.choiceEntry.slice(0, 6)
-        }
+        },
+        // mapState: ({user: state => state.user})
     },
     methods: {
         async getBanner() {
@@ -140,11 +139,6 @@ export default {
             // 获取精选歌单，随机选取6条数据显示在首页
             await getChoiceSheet().then(data=>{
                 this.choiceEntry = data.result
-                // while(this.choiceEntry.length < 6) {
-                //     let temp = (Math.random()*data.result.length) >> 0
-                //     this.choiceEntry.push(data.result.splice(temp, 1))
-                // }
-                console.log(this.choiceEntry)
             })
             // 根据tag类型，随机获取精选歌单
             await getSongSheet(this.sheetTage).then(data=>{
@@ -154,7 +148,7 @@ export default {
             // 获取精选歌曲
             await getSongRadio().then(res=>{
                 // console.log(res)
-                this.musicEntry = res.result
+                this.musicEntry = res.albums
             })
         },
         // 点击播放推荐歌曲
@@ -217,34 +211,40 @@ export default {
             padding: 10px 0 20px;
             text-align: center;
             .type-swipe {
-                .van-image {
-                    color: #fff;
-                    font-size: 2rem;
-                    background-color: #cdcdcd;
-                    border-radius: 50%;
-                    width: 40px;
-                    height: 40px;
-                    margin-bottom: .3rem;
-                    position: relative;
-                    img {
-                        width: 60%;
-                        position: absolute;
-                        margin: auto;
-                        top: 0;bottom: 0;
-                        left: 0;right: 0
+                .van-swipe-item {
+                    &:first-child .van-image i {
+                        display: block;
                     }
-                    a {
-                        position: absolute;
-                        margin: auto;
-                        left: 0;right: 0;
-                        font-size: .25rem;
-                        line-height: 46px;
+                    .van-image {
+                        color: #fff;
+                        font-size: 2rem;
+                        background-color: #cdcdcd;
+                        border-radius: 50%;
+                        width: 40px;
+                        height: 40px;
+                        margin-bottom: .3rem;
+                        position: relative;
+                        img {
+                            width: 60%;
+                            position: absolute;
+                            margin: auto;
+                            top: 0;bottom: 0;
+                            left: 0;right: 0
+                        }
+                        i {
+                            display: none;
+                            position: absolute;
+                            margin: auto;
+                            left: 0;right: 0;
+                            font-size: .25rem;
+                            line-height: 46px;
+                        }
                     }
-                }
-                span {
-                    color: #fff;
-                    font-size: .85rem;
-                    font-family: love-better, Arial, sans-serif;
+                    span {
+                        color: #fff;
+                        font-size: .85rem;
+                        font-family: love-better, Arial, sans-serif;
+                    }
                 }
             }
         }

@@ -13,17 +13,17 @@
                 </div>
                 <ul class="interaction">
                     <li>
-                        <van-icon name="chat-o" color="#fff" size="1.1rem" />
+                        <i class="iconfont icon-pinglun"></i>
                         <br>
                         <span>{{sheet.commentCount}}</span>
                     </li>
                     <li>
-                        <van-icon name="cluster-o" color="#fff" size="1.1rem" />
+                        <i class="iconfont icon-fenxiang1"></i>
                         <br>
                         <span>{{sheet.shareCount}}</span>
                     </li>
                     <li>
-                        <van-icon name="down" color="#fff" size="1.1rem" />
+                        <i class="iconfont icon-xiazai"></i>
                         <br>
                         <span>下载</span>
                     </li>
@@ -68,7 +68,7 @@
                 </header>
                 <div class="header">
                     <div class="nav-title">
-                        <a class="sheet-image"><img :src="sheet.coverImgUrl" alt="sheet.name"></a>
+                        <a class="sheet-image" @click="show = true"><img :src="sheet.coverImgUrl" alt="sheet.name"></a>
                         <div class="sheet-message">
                             <h3>{{sheet.name}}</h3>
                             <a class="sheet-message-creator">
@@ -79,7 +79,7 @@
                             <p class="sheet-message-desc" @click="show = true">{{sheet.description}}<van-icon name="arrow" color="#cdcdcd" /></p>
                             <van-overlay :show="show" @click="show = false">
                                 <van-icon name="cross" color="#fff" />
-                                <img class="desc-image" width="50%" :src="creatorUrl" alt="">
+                                <img class="desc-image" width="50%" :src="sheet.coverImgUrl" alt="">
                                 <h3>{{sheet.name}}</h3>
                                 <div class="image-inline"></div>
                                 <p class="sheet-tag">标签: <a v-for="tag in sheet.tags" :key="tag">{{tag}}</a></p>
@@ -89,17 +89,18 @@
                     </div>
                     <ul class="interaction">
                         <li>
-                            <van-icon name="chat-o" color="#fff" size="1.1rem" />
+                            <i class="iconfont icon-pinglun"></i>
                             <br>
                             <span>{{sheet.commentCount}}</span>
                         </li>
                         <li>
-                            <van-icon name="cluster-o" color="#fff" size="1.1rem" />
+<!--                            <van-icon name="cluster-o" color="#fff" size="1.1rem" />-->
+                            <i class="iconfont icon-fenxiang1"></i>
                             <br>
                             <span>{{sheet.shareCount}}</span>
                         </li>
                         <li>
-                            <van-icon name="down" color="#fff" size="1.1rem" />
+                            <i class="iconfont icon-xiazai"></i>
                             <br>
                             <span>下载</span>
                         </li>
@@ -261,6 +262,10 @@ export default {
                             color: #ffffff;
                             font-family: Jianti;
                             font-size: .85rem;
+                        }
+                        i {
+                            font-size: 1.1rem;
+                            color: #fff
                         }
                     }
                 }
