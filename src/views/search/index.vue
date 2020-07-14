@@ -9,7 +9,7 @@
             <section class="hot-borad">
                 <h3>热搜榜</h3>
                 <ul>
-                    <li v-for="(item, index) in hotList" :key="item.searchWord">
+                    <li v-for="(item, index) in hotList" :key="item.searchWord" @click="openHotSearch(item.searchWord)">
                         <a class="">{{index}}</a>
                         <div>
                             <h3>{{item.searchWord}}<img height="13" :src="item.iconUrl ? item.iconUrl : '-'" alt=""></h3>
@@ -42,7 +42,6 @@ export default {
                 this.value = res.data.realkeyword
             })
             await getSearchBoard().then(data => {
-                console.log(data)
                 this.hotList = data.data
             })
         },
@@ -52,6 +51,11 @@ export default {
                 path: `/searchDetail/${val}`
             })
             // this.$router.push('/search')
+        },
+        openHotSearch(name) {
+            this.$router.push({
+                path: `/searchDetail/${name}`
+            })
         }
     },
     mounted() {
@@ -94,7 +98,7 @@ export default {
                     margin-left: 15px;
                 }
                 .search-message {
-                    font-size: .65rem;
+                    font-size: .85rem;
                     margin-left: 1rem;
                     font-family: love-better;
                     color: #cdcdcd;
@@ -103,7 +107,7 @@ export default {
                     border-bottom: 1px solid #cdcdcd;
                     width: 75%;
                     &::-webkit-input-placeholder {
-                        color: #fff
+                        color: #cdcdcd
                     }
                 }
                 .personal {

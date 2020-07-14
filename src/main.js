@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import './http/axios'
 
+// import 'lib-flexible/flexible'
 import Vant from 'vant';  // 引用 vant 组件
 import 'vant/lib/index.css';
 

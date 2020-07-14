@@ -45,15 +45,24 @@ export default {
 </script>
 <style lang="scss" scoped>
     .header {
-        padding: 15px;
-        background-color: rgba(44,62,80,.2);
+        padding: 10px 0;
+        background-color: rgb(44,62,80);
         display: flex;
         justify-content: space-between;
+        position: fixed;
+        width: 100%;
+        top: 0;left: 0;
+        z-index: 150;
         >div {
             color: #fff;
         }
-        >.left, >.right {
+        >.left {
             font-size: 1.5rem;
+            margin-left: 15px;
+        }
+        >.right {
+            font-size: 1.5rem;
+            margin-right: 15px;
         }
         >.header-menu {
             .el-menu-demo {

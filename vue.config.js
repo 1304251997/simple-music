@@ -30,6 +30,18 @@ module.exports = {
         // 多入口时，接着写子页面
         // subpage: "src/main.js"
     },
+    // chainWebpack: config => {
+    //     config.module
+    //         .rule('css')
+    //         .test(/\.css$/)
+    //         .oneOf('vue')
+    //         .resourceQuery(/\?vue/)
+    //         .use('px2rem')
+    //         .loader('px2rem-loader')
+    //         .options({
+    //             remUnit: 350
+    //         })
+    // },
     // configureWebpack: {
     //     plugins: [
     //         new SkeletonPlugin({

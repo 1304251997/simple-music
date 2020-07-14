@@ -189,7 +189,7 @@ export default {
         background-color: #000;
     }
     .find {
-        padding: 10px 15px 0;
+        padding: 10px 15px 3rem;
         .header {
             .my-swipe {
                 /*height: 143px;*/

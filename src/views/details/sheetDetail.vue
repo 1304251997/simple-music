@@ -189,6 +189,7 @@ export default {
     mounted() {
         this.getMessage()
         this.sheetLive()
+        console.log(this.sheetId)
     },
 }
 </script>

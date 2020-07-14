@@ -19,7 +19,7 @@ export const getSearchTag = () => getRequest('/search/default')
 /** 获取热搜榜 **/
 export const getSearchBoard = () => getRequest('/search/hot/detail')
 /** 根据keywords去进行搜索 **/
-export const searchContent = (keyword) => getRequest(`/search?keywords=${keyword}`)
+export const searchContent = (keyword, type) => getRequest(`/search?keywords=${keyword}&type=${type}`)
 
 
 /* 获取登录状态 */

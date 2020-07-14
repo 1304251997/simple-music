@@ -16,47 +16,51 @@
                   color="#fff"
                   animated
                   swipeable>
-                <van-tab title="综合" class="comprehensive">
-                    <h3>单曲<a class="play-all"><van-icon name="play-circle-o" />播放全部</a></h3>
-                    <ul>
-                        <li v-for="item in songsList" :key="item.id">
-                            <div>
-                                <h3>{{item.name}}</h3>
-                                <p><span v-for="song in item.artists" :key="song.id">{{song.name}}</span> - {{item.album.name}}</p>
-                                <p v-if="item.alias">{{item.alias[0] ? item.alias[0] : ''}}</p>
-                            </div>
-                        </li>
-                    </ul>
+                <van-tab title="单曲" tag="1" class="single">
+                    <v-single v-bind:title="searchTag"></v-single>
                 </van-tab>
-                <van-tab title="单曲">单曲</van-tab>
-                <van-tab title="视频">视频</van-tab>
-                <van-tab title="歌手">歌手</van-tab>
-                <van-tab title="专辑">专辑</van-tab>
-                <van-tab title="歌单">歌单</van-tab>
-                <van-tab title="用户">用户</van-tab>
+                <van-tab title="视频" tag="1014" class="video">
+                    <v-video v-bind:title="searchTag"></v-video>
+                </van-tab>
+                <van-tab title="歌手" tag="100" class="singer">
+                    <v-singer v-bind:title="searchTag"></v-singer>
+                </van-tab>
+                <van-tab title="专辑" tag="10" class="album">
+                    <v-album v-bind:title="searchTag"></v-album>
+                </van-tab>
+                <van-tab title="歌单" tag="1000" class="songsheet">
+                    <song-sheet v-bind:title="searchTag"></song-sheet>
+                </van-tab>
+                <van-tab title="用户" tag="1002" class="users">
+                    <v-user v-bind:title="searchTag"></v-user>
+                </van-tab>
             </van-tabs>
         </div>
     </div>
 </template>
 <script>
-import { searchContent } from '../../http/api'
+// import { searchContent } from '../../http/api'
+import vSingle from './components/single.vue'
+import vVideo from './components/video.vue'
+import VSinger from './components/singer.vue'
+import VAlbum from './components/album.vue'
+import songSheet from './components/songsheet.vue'
+import vUser from './components/user.vue'
 export default {
     name: 'searchDetail',
     data() {
         return {
             searchTag: '',      // 父组件传过来的搜索的值
-            messageList: Object.freeze([      // 搜索的结果分类
-                {title: '综合', tag: '1018'},
-                {title: '单曲', tag: '1'},
-                {title: '视频', tag: '1014'},
-                {title: '歌手', tag: '100'},
-                {title: '专辑', tag: '10'},
-                {title: '歌单', tag: '1000'},
-                {title: '用户', tag: '1002'}
-            ]),
             active: 0,
-            songsList: []   // 获取的综合列表里的单曲
         }
+    },
+    components: {
+        vSingle,
+        vVideo,
+        VSinger,
+        VAlbum,
+        songSheet,
+        vUser
     },
     methods: {
         // 返回上一页
@@ -67,10 +71,7 @@ export default {
         async putSearch() {
             let key = this.$route.params.key
             this.searchTag = key
-            await searchContent(key).then(data => {
-                this.songsList = data.result.songs
-            })
-        }
+        },
     },
     mounted() {
         this.putSearch()
@@ -140,31 +141,33 @@ export default {
                         height: 100%;
                         color: #fff;
                         font-family: love-better;
-                        padding: 0 15px;
-                        .comprehensive {
-                            padding: 15px 0 0 0;
-                            h3 {
-                                margin: 0;
+                        h3.list-title {
+                            margin: 0;
+                            display: flex;
+                            justify-content: space-between;
+                            font-size: 1rem;
+                            .play-all {
+                                font-size: .65rem;
+                                font-weight: 200;
                                 display: flex;
-                                justify-content: space-between;
-                                font-size: 1rem;
-                                .play-all {
-                                    font-size: .65rem;
-                                    font-weight: 200;
-                                    display: flex;
-                                    border: 1px solid #656565;
-                                    border-radius: 10px;
-                                    padding: 3px 10px;
-                                    .van-icon {
-                                        margin: .05rem .2rem 0 0;
-                                    }
+                                border: 1px solid #656565;
+                                border-radius: 10px;
+                                padding: 3px 10px;
+                                .van-icon {
+                                    margin: .05rem .2rem 0 0;
                                 }
                             }
+                        }
+                        .single {
+                            padding: 15px 15px 6rem;
+                            overflow-y: auto;
                             ul {
                                 li {
-                                    display: flex;
                                     margin-top: 1rem;
+                                    overflow: hidden;
                                     >div {
+                                        float: left;
+                                        width: 90%;
                                         h3 {
                                             margin: 0;
                                             font-size: .85rem;
@@ -174,6 +177,213 @@ export default {
                                             margin: .3rem 0 0 0;
                                             font-size: .45rem;
                                             color: #cdcdcd;
+                                            overflow:hidden; // 超出的文本隐藏
+                                            text-overflow:ellipsis; // 溢出用省略号显示
+                                            white-space:nowrap; // 溢出不换行
+                                            span .active {
+                                                color: #aad4ff;
+                                            }
+                                        }
+                                    }
+                                    .song-video {
+                                        float: right;
+                                    }
+                                    .song-setting {
+                                        float: right;
+                                    }
+                                }
+                            }
+                        }
+                        .video {
+                            padding: 10px 15px 6rem;
+                            overflow-y: auto;
+                            ul {
+                                li {
+                                    display: flex;
+                                    margin-bottom: .5rem;
+                                    .video-image {
+                                        width: 33%;
+                                        position: relative;
+                                        img {
+                                            width: 100%;
+                                            border-radius: 5px;
+                                        }
+                                        .play-time {
+                                            position: absolute;
+                                            right: .3rem;top: .2rem;
+                                            font-size: .65rem;
+                                            i {
+                                                font-size: .45rem;
+                                                margin-right: .1rem;
+                                            }
+                                        }
+                                    }
+                                    .video-message {
+                                        padding: .3rem 0 0 .8rem;
+                                        width: 77%;
+                                        h3 {
+                                            font-size: .85rem;
+                                            margin: 0;
+                                            font-weight: 500;
+                                            line-height: 1.3;
+                                            overflow: hidden;
+                                            text-overflow: ellipsis;
+                                            display:-webkit-box; //作为弹性伸缩盒子模型显示。
+                                            -webkit-box-orient:vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
+                                            -webkit-line-clamp:2; //显示的行
+                                        }
+                                        p {
+                                            margin: .3rem 0 0 0;
+                                            color: #cdcdcd;
+                                            font-size: .45rem;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .singer {
+                            padding: 10px 15px 6rem;
+                            overflow-y: auto;
+                            ul {
+                                li {
+                                    display: flex;
+                                    position: relative;
+                                    margin-bottom: .8rem;
+                                    .singer-avatar-image {
+                                        width: 12%;
+                                        img {
+                                            width: 100%;
+                                            border-radius: 50%;
+                                        }
+                                    }
+                                    .singer-name {
+                                        margin: 0 0 0 1rem;
+                                        font-size: .85rem;
+                                        color: #aad4ff;
+                                        line-height: 3.5;
+                                        span {
+                                            color: #cdcdcd
+                                        }
+                                    }
+                                    .singer-auth {
+                                        position: absolute;
+                                        margin: auto;
+                                        right: 0;
+                                        line-height: 3;
+                                        .van-icon {
+                                            font-size: .6rem;
+                                            margin-right: .5rem;
+                                        }
+                                        span {
+                                            font-size: .45rem;
+                                            color: #cdcdcd
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .album {
+                            padding: 10px 15px 6rem;
+                            overflow-y: auto;
+                            ul {
+                                li {
+                                    display: flex;
+                                    margin-bottom: .5rem;
+                                    .album-image {
+                                        width: 12%;
+                                        position: relative;
+                                        img {
+                                            width: 100%;
+                                            z-index: 100;
+                                            border-radius: 5px;
+                                        }
+                                        .album-image-round {
+                                            position: absolute;
+                                            z-index: -1;
+                                            background-color: #000;
+                                            width: 100%;
+                                            height: 90%;
+                                            left: 20%;
+                                            border-radius: 50%;
+                                        }
+                                    }
+                                    .album-desc {
+                                        margin: 0;
+                                        padding: .2rem 0 0 1rem;
+                                        p {
+                                            margin: 0;
+                                            font-size: .85rem;
+                                            font-weight: 500;
+                                            span {
+                                                color: #cdcdcd
+                                            }
+                                        }
+                                        a {
+                                            font-size: .45rem;
+                                            color: #cdcdcd
+                                        }
+                                        a .active {
+                                            color: #aad4ff;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .songsheet {
+                            padding: 10px 15px 6rem;
+                            overflow-y: auto;
+                            ul {
+                                li {
+                                    display: flex;
+                                    margin-bottom: .5rem;
+                                    .sheet-image {
+                                        width: 12%;
+                                        img {
+                                            width: 100%;
+                                            border-radius: 5px;
+                                        }
+                                    }
+                                    .sheet-desc {
+                                        margin: 0;
+                                        padding: .2rem 0 0 1rem;
+                                        font-size: .85rem;
+                                        p {
+                                            margin: 0 0 .3rem 0;
+                                        }
+                                        a {
+                                            font-size: .65rem;
+                                            color: #cdcdcd;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .users {
+                            padding: 10px 15px 6rem;
+                            overflow-y: auto;
+                            ul {
+                                li {
+                                    display: flex;
+                                    margin-bottom: 1rem;
+                                    .user-avatar-image {
+                                        width: 11%;
+                                        img {
+                                            width: 100%;
+                                            border-radius: 50%;
+                                        }
+                                    }
+                                    .user-name {
+                                        margin: 0 0 0 1rem;
+                                        font-size: 0.85rem;
+                                        color: #aad4ff;
+                                        line-height: 3;
+                                        .iconfont {
+                                            font-size: .65rem;
+                                            font-weight: 500;
+                                            margin-left: .5rem;
+                                        }
+                                        .icon-nv {
+                                            color: #f99898
                                         }
                                     }
                                 }
